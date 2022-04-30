@@ -36,6 +36,15 @@ int	ft_putchr(int c)
 	return (1);
 }
 
+int	ft_putstr(char *str)
+{
+	int	length;
+
+	length = ft_strlen(str);
+	write(1, str, length);
+	return (1);
+}
+
 t_print	*ft_initialise_tab(t_print *tab)
 {
 	tab->width = 0;
@@ -55,10 +64,11 @@ t_print	*ft_initialise_tab(t_print *tab)
 const char	*ft_eval_format(t_print	*tab, const char *format)
 {
 	if (*format == '%')
-		ft_putchr('%');
+		tab->length+=ft_putchr('%');
 	else if (*format == 'c')
-		ft_putchr(va_arg(tab->args, int));
-	tab->length++;
+		tab->length+=ft_putchr(va_arg(tab->args, int));
+	else if (*format == 's')
+		tab->length+=ft_putstr(va_arg(tab->args, char*));
 	return (format + 1);
 }
 

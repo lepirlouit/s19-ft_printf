@@ -4,3 +4,4 @@ main.c
 a.out
 libftprintf.a
 libft.a
+*.o

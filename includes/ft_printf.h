@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:39:57 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/04/18 23:48:38 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/04/25 19:37:33 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FT_PRINTF_H
 # include<stdarg.h>
 # include<unistd.h>
+# include"libft.h"
 
 typedef struct s_print
 {
