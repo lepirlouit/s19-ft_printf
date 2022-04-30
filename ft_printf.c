@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-int		ft_max(unsigned int a, unsigned int b)
+int	ft_max(unsigned int a, unsigned int b)
 {
 	if (a > b)
 		return (a);
@@ -45,7 +45,7 @@ void	ft_padding(t_print *tab, char padding_char, unsigned int min_size)
 {
 	while (min_size < tab->width)
 	{
-		tab->length+= write(1, &padding_char, 1);
+		tab->length += write(1, &padding_char, 1);
 		min_size++;
 	}
 }
@@ -55,12 +55,11 @@ void	ft_print_char(t_print *tab)
 	char	a;
 
 	a = va_arg(tab->args, int);
-    // ft_update_tab(tab, 1);      //# calculate special cases and length                      
-    if (tab->width && !tab->dash) // # if width and not - flag
-        ft_padding(tab, ' ', 1);    // # handle right alignment
-    tab->length += write(1, &a, 1); // # print char
-    if (tab->width && tab->dash)  // # if width and - flag      
-        ft_padding(tab, ' ', 1); 
+	if (tab->width && !tab->dash)
+		ft_padding(tab, ' ', 1);
+	tab->length += write(1, &a, 1);
+	if (tab->width && tab->dash)
+		ft_padding(tab, ' ', 1);
 }
 
 // void	ft_print_percent(t_print *tab)
@@ -102,12 +101,11 @@ t_print	*ft_initialise_tab(t_print *tab)
 const char	*ft_eval_format(t_print	*tab, const char *format)
 {
 	if (*format == '%')
-		tab->length+=ft_putchr('%');
+		tab->length += ft_putchr('%');
 	else if (*format == 'c')
 		ft_print_char(tab);
-	// tab->length += ft_putchr(va_arg(tab->args, int));
 	else if (*format == 's')
-		tab->length+=ft_putstr(va_arg(tab->args, char*));
+		tab->length += ft_putstr(va_arg(tab->args, char *));
 	return (format + 1);
 }
 
@@ -142,7 +140,7 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 		//TODO : eval other flags
 		format++;
 	}
-	return ft_eval_format(tab, format);
+	return (ft_eval_format(tab, format));
 }
 
 int	ft_printf(const char *format, ...)
