@@ -6,12 +6,12 @@
 #    By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/25 19:38:32 by bde-biol          #+#    #+#              #
-#    Updated: 2022/04/30 21:58:41 by bde-biol         ###   ########.fr        #
+#    Updated: 2022/05/04 20:55:12 by bde-biol         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 LIBFT_SRCS = ${addprefix libft/,ft_putchar_fd.c ft_strlen.c ft_putstr_fd.c \
-	ft_putnbr_fd.c ft_isdigit.c}
+	ft_putnbr_fd.c ft_isdigit.c ft_atoi.c}
 LIBFT_OBJS = ${LIBFT_SRCS:.c=.o}
 SRCS = ft_printf.c
 OBJS = ${SRCS:.c=.o}

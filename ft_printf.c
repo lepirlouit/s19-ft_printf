@@ -12,9 +12,16 @@
 
 #include "ft_printf.h"
 
-int	ft_max(unsigned int a, unsigned int b)
+static int	ft_max(unsigned int a, unsigned int b)
 {
 	if (a > b)
+		return (a);
+	return (b);
+}
+
+static int	ft_min(unsigned int a, unsigned int b)
+{
+	if (a < b)
 		return (a);
 	return (b);
 }
@@ -62,6 +69,33 @@ void	ft_print_char(t_print *tab)
 		ft_padding(tab, ' ', 1);
 }
 
+void	ft_print_str(t_print *tab)
+{
+	char	*str;
+	int		length;
+
+	str = va_arg(tab->args, char *);
+	if (!str)
+	{
+		if (tab->dot && tab->precision < 6)
+			length = 0;
+		else
+			length = 6;
+	}
+	else if (tab->dot)
+		length = ft_min(ft_strlen(str), tab->precision);
+	else
+		length = ft_strlen(str);
+	if (tab->width && !tab->dash)
+		ft_padding(tab, ' ', length);
+	if (!str)
+		tab->length += write(1, "(null)", length);
+	else
+		tab->length += write(1, str, length);
+	if (tab->width && tab->dash)
+		ft_padding(tab, ' ', length);
+}
+
 // void	ft_print_percent(t_print *tab)
 // {
 
@@ -70,15 +104,6 @@ void	ft_print_char(t_print *tab)
 int	ft_putchr(int c)
 {
 	write(1, &c, 1);
-	return (1);
-}
-
-int	ft_putstr(char *str)
-{
-	int	length;
-
-	length = ft_strlen(str);
-	write(1, str, length);
 	return (1);
 }
 
@@ -105,7 +130,7 @@ const char	*ft_eval_format(t_print	*tab, const char *format)
 	else if (*format == 'c')
 		ft_print_char(tab);
 	else if (*format == 's')
-		tab->length += ft_putstr(va_arg(tab->args, char *));
+		ft_print_str(tab);
 	return (format + 1);
 }
 
@@ -128,6 +153,7 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 	tab->dot = 0;
 	tab->dash = 0;
 	tab->width = 0;
+	tab->precision = 0;
 	//TODO : init flags
 	while (*format && !is_format(*format))
 	{
@@ -136,7 +162,14 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 		else if (*format == '-')
 			tab->dash = 1;
 		else if (ft_isdigit(*format))
-			tab->width = tab->width * 10 + (*format - '0');
+		{
+			if (tab->dot)
+				tab->precision = ft_atoi(format);
+			else
+				tab->width = ft_atoi(format);
+			while (format[1] && ft_isdigit(format[1]))
+				format++;
+		}
 		//TODO : eval other flags
 		format++;
 	}

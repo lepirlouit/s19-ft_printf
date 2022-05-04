@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:39:57 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/04/25 19:37:33 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/05/04 20:51:54 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 
 typedef struct s_print
 {
-	va_list			args;
-	unsigned int	precision : 1;
 	unsigned int	zero : 1;
 	unsigned int	dot : 1;
 	unsigned int	dash : 1;
@@ -27,8 +25,10 @@ typedef struct s_print
 	unsigned int	is_zero : 1;
 	unsigned int	perc : 1;
 	unsigned int	space : 1;
+	unsigned int	precision;
 	unsigned int	width;
 	unsigned int	length;
+	va_list			args;
 }	t_print;
 
 int	ft_printf(const char *format, ...);

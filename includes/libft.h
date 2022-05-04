@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 09:08:05 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/04/30 22:51:33 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/05/04 20:56:22 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,6 @@ void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 int		ft_isdigit(int c);
+int	ft_atoi(const char *nptr);
 
 #endif
