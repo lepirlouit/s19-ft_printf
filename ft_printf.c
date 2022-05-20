@@ -57,6 +57,13 @@ void	ft_padding(t_print *tab, char padding_char, unsigned int min_size)
 	}
 }
 
+
+int	ft_putchr(int c)
+{
+	write(1, &c, 1);
+	return (1);
+}
+
 void	ft_print_char(t_print *tab)
 {
 	char	a;
@@ -96,15 +103,56 @@ void	ft_print_str(t_print *tab)
 		ft_padding(tab, ' ', length);
 }
 
-// void	ft_print_percent(t_print *tab)
-// {
-
-// }
-
-int	ft_putchr(int c)
+int	ft_ptr_len(unsigned long int ptr)
 {
-	write(1, &c, 1);
-	return (1);
+	int	len;
+
+	len = 0;
+	while (ptr != 0)
+	{
+		ptr = ptr / 16;
+		len++;
+	}
+	return (len);
+}
+
+int	write_hex_lower(char val)
+{
+	if (val >= 10)
+		return (ft_putchr((val) + 'a' - 10));
+	else
+		return (ft_putchr((val) + '0'));
+}
+
+void write_ptr(unsigned long int ptr)
+{
+	if (ptr > 16)
+		write_ptr(ptr / 16);
+	write_hex_lower(ptr % 16);
+}
+
+void ft_print_ptr(t_print *tab)
+{
+	void	*ptr;
+	int		length;
+
+	ptr = va_arg(tab->args, void *);
+	if (!ptr)
+		length = 5;
+	else
+		length = ft_ptr_len((unsigned long int) ptr) + 2;
+	if (tab->width && !tab->dash)
+		ft_padding(tab, ' ', length);
+	if (!ptr)
+		tab->length += write(1, "(nil)", length);
+	else
+	{
+		write(1, "0x", 2);
+		write_ptr((unsigned long int) ptr);
+		tab->length += length;
+	}
+	if (tab->width && tab->dash)
+		ft_padding(tab, ' ', length);
 }
 
 t_print	*ft_initialise_tab(t_print *tab)
@@ -131,6 +179,22 @@ const char	*ft_eval_format(t_print	*tab, const char *format)
 		ft_print_char(tab);
 	else if (*format == 's')
 		ft_print_str(tab);
+	else if (*format == 'p')
+		ft_print_ptr(tab);
+	else if (*format == 'd')
+		;
+	// ft_print_ptr(tab);
+	else if (*format == 'i');
+	// ft_print_ptr(tab);
+	else if (*format == 'u')
+		;
+	// ft_print_ptr(tab);
+	else if (*format == 'x')
+		;
+	// ft_print_ptr(tab);
+	else if (*format == 'X')
+		;
+	// ft_print_ptr(tab);
 	return (format + 1);
 }
 
