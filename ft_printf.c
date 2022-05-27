@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:24:19 by                   #+#    #+#             */
-/*   Updated: 2022/05/27 22:56:23 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/05/27 23:43:24 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,10 @@ void	ft_print_integer(t_print *tab)
 	unsigned int	length;
 
 	nbr = va_arg(tab->args, int);
-	length = ft_nbr_len(nbr);
+	if (nbr == 0 && tab->dot && tab->precision == 0)
+		length = 0;
+	else
+		length = ft_nbr_len(nbr);
 	if (tab->width && !tab->dash)
 		ft_padding(tab, ' ', ft_max(length, tab->precision));
 	ft_number_padding(tab, length);
@@ -206,7 +209,7 @@ void	ft_print_integer(t_print *tab)
 			write_nbr(-(nbr / 10));
 		write_nbr(-(nbr % 10));
 	}
-	else
+	else if (length)
 		write_nbr(nbr);
 	tab->length += length;
 	if (tab->width && tab->dash)
@@ -239,10 +242,8 @@ const char	*ft_eval_format(t_print	*tab, const char *format)
 		ft_print_str(tab);
 	else if (*format == 'p')
 		ft_print_ptr(tab);
-	else if (*format == 'd')
-		ft_print_integer(tab);
-	// ft_print_ptr(tab);
-	else if (*format == 'i');
+	else if (*format == 'd' || *format == 'i')
+		ft_print_integer(tab);	// ft_print_ptr(tab);
 	// ft_print_ptr(tab);
 	else if (*format == 'u')
 		;
@@ -260,7 +261,7 @@ char	is_format(char c)
 {
 	char	*formats;
 
-	formats = "udcsupxX%";
+	formats = "cspdiuxX%";
 	while (*formats)
 	{
 		if (*formats == c)
@@ -275,7 +276,7 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 	tab->dot = 0;
 	tab->dash = 0;
 	tab->width = 0;
-	tab->precision = 0;
+	tab->precision = 1;
 	//TODO : init flags
 	while (*format && !is_format(*format))
 	{
