@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*       */
-/*          :::      ::::::::   */
-/*   ft_printf.c                 :+:      :+:    :+:   */
-/*      +:+ +:+         +:+     */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
-/*  +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/18 22:24:19 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/04/18 22:46:36 by bde-biol         ###   ########.fr       */
-/*       */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/18 22:24:19 by                   #+#    #+#             */
+/*   Updated: 2022/05/27 22:56:23 by bde-biol         ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
@@ -57,6 +57,15 @@ void	ft_padding(t_print *tab, char padding_char, unsigned int min_size)
 	}
 }
 
+void	ft_number_padding(t_print *tab, unsigned int min_size)
+{
+	while (min_size < tab->precision)
+	{
+		tab->length += write(1, "0", 1);
+		tab->width--;
+		min_size++;
+	}
+}
 
 int	ft_putchr(int c)
 {
@@ -103,38 +112,63 @@ void	ft_print_str(t_print *tab)
 		ft_padding(tab, ' ', length);
 }
 
-int	ft_ptr_len(unsigned long int ptr)
+unsigned int	ft_nb_len_base(unsigned long int ptr, unsigned int base)
 {
-	int	len;
+	unsigned int	len;
 
+	if (ptr == 0)
+		return (1);
 	len = 0;
 	while (ptr != 0)
 	{
-		ptr = ptr / 16;
+		ptr = ptr / base;
 		len++;
 	}
 	return (len);
+}
+
+unsigned int	ft_nbr_len(int nbr)
+{
+	if (nbr < -10)
+		return (2 + ft_nb_len_base(-(nbr / 10), 10));
+	if (nbr < -0)
+		return (1 + ft_nb_len_base(-nbr, 10));
+	return (ft_nb_len_base(nbr, 10));
+}
+
+unsigned int	ft_ptr_len(unsigned long int ptr)
+{
+	return (ft_nb_len_base(ptr, 16));
 }
 
 int	write_hex_lower(char val)
 {
 	if (val >= 10)
 		return (ft_putchr((val) + 'a' - 10));
-	else
-		return (ft_putchr((val) + '0'));
+	return (ft_putchr((val) + '0'));
 }
 
-void write_ptr(unsigned long int ptr)
+void	write_nbr_base(unsigned long int ptr, unsigned char base)
 {
-	if (ptr > 16)
-		write_ptr(ptr / 16);
-	write_hex_lower(ptr % 16);
+	if (ptr > base)
+		write_nbr_base(ptr / base, base);
+	write_hex_lower(ptr % base);
 }
 
-void ft_print_ptr(t_print *tab)
+void	write_ptr(unsigned long int ptr)
 {
-	void	*ptr;
-	int		length;
+	return (write_nbr_base(ptr, 16));
+}
+
+void	write_nbr(unsigned long int ptr)
+{
+	return (write_nbr_base(ptr, 10));
+}
+
+void	ft_print_ptr(t_print *tab)
+{
+	void			*ptr;
+	unsigned int	length;
 
 	ptr = va_arg(tab->args, void *);
 	if (!ptr)
@@ -151,6 +185,30 @@ void ft_print_ptr(t_print *tab)
 		write_ptr((unsigned long int) ptr);
 		tab->length += length;
 	}
+	if (tab->width && tab->dash)
+		ft_padding(tab, ' ', length);
+}
+
+void	ft_print_integer(t_print *tab)
+{
+	int				nbr;
+	unsigned int	length;
+
+	nbr = va_arg(tab->args, int);
+	length = ft_nbr_len(nbr);
+	if (tab->width && !tab->dash)
+		ft_padding(tab, ' ', ft_max(length, tab->precision));
+	ft_number_padding(tab, length);
+	if (nbr < 0)
+	{
+		write(1, "-", 1);
+		if (nbr < -10)
+			write_nbr(-(nbr / 10));
+		write_nbr(-(nbr % 10));
+	}
+	else
+		write_nbr(nbr);
+	tab->length += length;
 	if (tab->width && tab->dash)
 		ft_padding(tab, ' ', length);
 }
@@ -182,7 +240,7 @@ const char	*ft_eval_format(t_print	*tab, const char *format)
 	else if (*format == 'p')
 		ft_print_ptr(tab);
 	else if (*format == 'd')
-		;
+		ft_print_integer(tab);
 	// ft_print_ptr(tab);
 	else if (*format == 'i');
 	// ft_print_ptr(tab);
@@ -193,7 +251,7 @@ const char	*ft_eval_format(t_print	*tab, const char *format)
 		;
 	// ft_print_ptr(tab);
 	else if (*format == 'X')
-		;
+{}		;
 	// ft_print_ptr(tab);
 	return (format + 1);
 }
