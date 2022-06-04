@@ -307,7 +307,7 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 	tab->dash = 0;
 	tab->width = 0;
 	tab->zero = 0;
-	tab->precision = 1;
+	tab->precision = 0;
 	//TODO : init flags
 	while (*format && !is_format(*format))
 	{
