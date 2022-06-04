@@ -5,45 +5,34 @@
 #                                                     +:+ +:+         +:+      #
 #    By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/04/25 19:38:32 by bde-biol          #+#    #+#              #
-#    Updated: 2022/06/04 18:43:08 by bde-biol         ###   ########.fr        #
+#    Created: 2022/06/04 18:46:17 by bde-biol          #+#    #+#              #
+#    Updated: 2022/06/04 18:46:18 by bde-biol         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = ft_printf.c
-OBJS = ${SRCS:.c=.o}
+SRCS	= ft_putchar_fd.c ft_strlen.c ft_putstr_fd.c \
+	ft_putnbr_fd.c ft_isdigit.c ft_atoi.c
 
-LIBFT = libft
-
-
+OBJS	= ${SRCS:.c=.o}
 CC	= gcc
 RM	= rm -f
 CFLAGS	= -Wall -Wextra -Werror
 AR	= ar rcs
-NAME	= libftprintf.a
-
+NAME	= libft.a
 
 all:		${NAME}
 
 .c.o:
-	${CC} ${CFLAGS} -I includes/ -c $< -o ${<:.c=.o}
-
+	${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
 ${NAME}:	${OBJS}
-			@make -C $(LIBFT)
-			${AR} ${NAME} ${OBJS} ${LIBFT_NAME}
-
-main:	${NAME} main.c
-		${CC} ${CFLAGS} -I includes/ -o main main.c ${NAME} ${LIBFT_NAME}
+			${AR} ${NAME} ${OBJS}
 
 clean:
-			@make clean -C $(LIBFT)
-			${RM} ${OBJS} ${LIBFT_OBJS} ${BONUS_OBJS}
+			${RM} ${OBJS}
 
 fclean:		clean
-			@make fclean -C $(LIBFT)
-			${RM} ${NAME} ${LIBFT_NAME}
+			${RM} ${NAME}
 
 re:			fclean all
 
 .PHONY:		all clean fclean re
-
