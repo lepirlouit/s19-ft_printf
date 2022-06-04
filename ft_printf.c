@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:24:19 by                   #+#    #+#             */
-/*   Updated: 2022/06/04 20:19:01 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/04 21:41:02 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,19 +187,24 @@ void	ft_print_integer(t_print *tab)
 		length = 0;
 	else
 		length = ft_nbr_len(nbr);
-	if (nbr < 0)
+	if (nbr < 0 && tab->zero)
 		write(1, "-", 1);
 	if (tab->width && !tab->dash)
-		ft_padding(tab, ft_max(length, tab->precision));
-	ft_number_padding(tab, length);
+		ft_padding(tab, length);
 	if (nbr < 0)
 	{
+		if (nbr < 0 && !tab->zero)
+			write(1, "-", 1);
+		ft_number_padding(tab, length - 1);
 		if (nbr <= -10)
 			write_nbr(-(nbr / 10));
 		write_nbr(-(nbr % 10));
 	}
 	else if (length)
+	{
+		ft_number_padding(tab, length);
 		write_nbr(nbr);
+	}
 	tab->length += length;
 	if (tab->width && tab->dash)
 		ft_padding(tab, length);
