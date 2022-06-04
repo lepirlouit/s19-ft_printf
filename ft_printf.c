@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:24:19 by                   #+#    #+#             */
-/*   Updated: 2022/06/04 18:00:42 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/04 20:19:01 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,25 +31,13 @@ void	ft_update_tab(t_print *tab, unsigned int content_length)
 	tab->length += ft_max(tab->width, content_length);
 }
 
-// void	ft_right_cs(t_print *tab, int tbd){
-// 	unsigned int i;
-
-// 	(void)tbd;
-// 	i = 0;
-// 	while (i < tab->width - 1)
-// 		ft_putchar_fd(' ', 1);
-// }
-// void	ft_left_cs(t_print *tab, int tbd){
-// 	unsigned int i;
-
-// 	(void)tbd;
-// 	i = 0;
-// 	while (i < tab->width - 1)
-// 		ft_putchar_fd(' ', 1);
-
-// }
-void	ft_padding(t_print *tab, char padding_char, unsigned int min_size)
+void	ft_padding(t_print *tab, unsigned int min_size)
 {
+	char padding_char;
+
+	padding_char = ' ';
+	if (tab->zero)
+		padding_char = '0';
 	while (min_size < tab->width)
 	{
 		tab->length += write(1, &padding_char, 1);
@@ -79,10 +67,10 @@ void	ft_print_char(t_print *tab)
 
 	a = va_arg(tab->args, int);
 	if (tab->width && !tab->dash)
-		ft_padding(tab, ' ', 1);
+		ft_padding(tab, 1);
 	tab->length += write(1, &a, 1);
 	if (tab->width && tab->dash)
-		ft_padding(tab, ' ', 1);
+		ft_padding(tab, 1);
 }
 
 void	ft_print_str(t_print *tab)
@@ -103,13 +91,13 @@ void	ft_print_str(t_print *tab)
 	else
 		length = ft_strlen(str);
 	if (tab->width && !tab->dash)
-		ft_padding(tab, ' ', length);
+		ft_padding(tab, length);
 	if (!str)
 		tab->length += write(1, "(null)", length);
 	else
 		tab->length += write(1, str, length);
 	if (tab->width && tab->dash)
-		ft_padding(tab, ' ', length);
+		ft_padding(tab, length);
 }
 
 unsigned int	ft_nb_len_base(unsigned long int ptr, unsigned int base)
@@ -129,9 +117,9 @@ unsigned int	ft_nb_len_base(unsigned long int ptr, unsigned int base)
 
 unsigned int	ft_nbr_len(int nbr)
 {
-	if (nbr < -10)
+	if (nbr <= -10)
 		return (2 + ft_nb_len_base(-(nbr / 10), 10));
-	if (nbr < -0)
+	if (nbr < 0)
 		return (1 + ft_nb_len_base(-nbr, 10));
 	return (ft_nb_len_base(nbr, 10));
 }
@@ -150,7 +138,7 @@ int	write_digit(char val, char lower)
 
 void	write_nbr_base(unsigned long int ptr, unsigned char base, char lower)
 {
-	if (ptr > base)
+	if (ptr >= base)
 		write_nbr_base(ptr / base, base, lower);
 	write_digit(ptr % base, lower);
 }
@@ -176,7 +164,7 @@ void	ft_print_ptr(t_print *tab)
 	else
 		length = ft_ptr_len((unsigned long int) ptr) + 2;
 	if (tab->width && !tab->dash)
-		ft_padding(tab, ' ', length);
+		ft_padding(tab, length);
 	if (!ptr)
 		tab->length += write(1, "(nil)", length);
 	else
@@ -186,7 +174,7 @@ void	ft_print_ptr(t_print *tab)
 		tab->length += length;
 	}
 	if (tab->width && tab->dash)
-		ft_padding(tab, ' ', length);
+		ft_padding(tab, length);
 }
 
 void	ft_print_integer(t_print *tab)
@@ -199,13 +187,14 @@ void	ft_print_integer(t_print *tab)
 		length = 0;
 	else
 		length = ft_nbr_len(nbr);
+	if (nbr < 0)
+		write(1, "-", 1);
 	if (tab->width && !tab->dash)
-		ft_padding(tab, ' ', ft_max(length, tab->precision));
+		ft_padding(tab, ft_max(length, tab->precision));
 	ft_number_padding(tab, length);
 	if (nbr < 0)
 	{
-		write(1, "-", 1);
-		if (nbr < -10)
+		if (nbr <= -10)
 			write_nbr(-(nbr / 10));
 		write_nbr(-(nbr % 10));
 	}
@@ -213,7 +202,7 @@ void	ft_print_integer(t_print *tab)
 		write_nbr(nbr);
 	tab->length += length;
 	if (tab->width && tab->dash)
-		ft_padding(tab, ' ', length);
+		ft_padding(tab, length);
 }
 
 void	ft_print_unsigned_integer(t_print *tab)
@@ -227,13 +216,13 @@ void	ft_print_unsigned_integer(t_print *tab)
 	else
 		length = ft_nb_len_base(nbr, 10);
 	if (tab->width && !tab->dash)
-		ft_padding(tab, ' ', ft_max(length, tab->precision));
+		ft_padding(tab, ft_max(length, tab->precision));
 	ft_number_padding(tab, length);
 	if (length)
 		write_nbr(nbr);
 	tab->length += length;
 	if (tab->width && tab->dash)
-		ft_padding(tab, ' ', length);
+		ft_padding(tab, length);
 }
 
 void	ft_print_hex(t_print *tab, char lower)
@@ -247,13 +236,13 @@ void	ft_print_hex(t_print *tab, char lower)
 	else
 		length = ft_nb_len_base(nbr, 16);
 	if (tab->width && !tab->dash)
-		ft_padding(tab, ' ', ft_max(length, tab->precision));
+		ft_padding(tab, ft_max(length, tab->precision));
 	ft_number_padding(tab, length);
 	if (length)
 		write_hex_nbr(nbr, lower);
 	tab->length += length;
 	if (tab->width && tab->dash)
-		ft_padding(tab, ' ', length);
+		ft_padding(tab, length);
 }
 
 t_print	*ft_initialise_tab(t_print *tab)
@@ -312,6 +301,7 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 	tab->dot = 0;
 	tab->dash = 0;
 	tab->width = 0;
+	tab->zero = 0;
 	tab->precision = 1;
 	//TODO : init flags
 	while (*format && !is_format(*format))
@@ -320,6 +310,8 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 			tab->dot = 1;
 		else if (*format == '-')
 			tab->dash = 1;
+		else if (*format == '0' && !tab->dot)
+			tab->zero = 1;
 		else if (ft_isdigit(*format))
 		{
 			if (tab->dot)
