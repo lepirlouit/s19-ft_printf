@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:24:19 by                   #+#    #+#             */
-/*   Updated: 2022/05/27 23:43:24 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/04 17:36:45 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,6 +216,26 @@ void	ft_print_integer(t_print *tab)
 		ft_padding(tab, ' ', length);
 }
 
+void	ft_print_unsigned_integer(t_print *tab)
+{
+	unsigned int	nbr;
+	unsigned int	length;
+
+	nbr = va_arg(tab->args, unsigned int);
+	if (nbr == 0 && tab->dot && tab->precision == 0)
+		length = 0;
+	else
+		length = ft_nb_len_base(nbr, 10);
+	if (tab->width && !tab->dash)
+		ft_padding(tab, ' ', ft_max(length, tab->precision));
+	ft_number_padding(tab, length);
+	if (length)
+		write_nbr(nbr);
+	tab->length += length;
+	if (tab->width && tab->dash)
+		ft_padding(tab, ' ', length);
+}
+
 t_print	*ft_initialise_tab(t_print *tab)
 {
 	tab->width = 0;
@@ -243,11 +263,9 @@ const char	*ft_eval_format(t_print	*tab, const char *format)
 	else if (*format == 'p')
 		ft_print_ptr(tab);
 	else if (*format == 'd' || *format == 'i')
-		ft_print_integer(tab);	// ft_print_ptr(tab);
-	// ft_print_ptr(tab);
+		ft_print_integer(tab);
 	else if (*format == 'u')
-		;
-	// ft_print_ptr(tab);
+		ft_print_unsigned_integer(tab);
 	else if (*format == 'x')
 		;
 	// ft_print_ptr(tab);
