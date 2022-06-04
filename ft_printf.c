@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:24:19 by                   #+#    #+#             */
-/*   Updated: 2022/06/04 17:36:45 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/04 18:00:42 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,28 +141,28 @@ unsigned int	ft_ptr_len(unsigned long int ptr)
 	return (ft_nb_len_base(ptr, 16));
 }
 
-int	write_hex_lower(char val)
+int	write_digit(char val, char lower)
 {
 	if (val >= 10)
-		return (ft_putchr((val) + 'a' - 10));
+		return (ft_putchr((val) + ( lower * ('a' - 'A'))+'A' - 10));
 	return (ft_putchr((val) + '0'));
 }
 
-void	write_nbr_base(unsigned long int ptr, unsigned char base)
+void	write_nbr_base(unsigned long int ptr, unsigned char base, char lower)
 {
 	if (ptr > base)
-		write_nbr_base(ptr / base, base);
-	write_hex_lower(ptr % base);
+		write_nbr_base(ptr / base, base, lower);
+	write_digit(ptr % base, lower);
 }
 
-void	write_ptr(unsigned long int ptr)
+void	write_hex_nbr(unsigned long int ptr, char lower)
 {
-	return (write_nbr_base(ptr, 16));
+	return (write_nbr_base(ptr, 16, lower));
 }
 
 void	write_nbr(unsigned long int ptr)
 {
-	return (write_nbr_base(ptr, 10));
+	return (write_nbr_base(ptr, 10, 0));
 }
 
 void	ft_print_ptr(t_print *tab)
@@ -182,7 +182,7 @@ void	ft_print_ptr(t_print *tab)
 	else
 	{
 		write(1, "0x", 2);
-		write_ptr((unsigned long int) ptr);
+		write_hex_nbr((unsigned long int) ptr, 1);
 		tab->length += length;
 	}
 	if (tab->width && tab->dash)
@@ -236,6 +236,26 @@ void	ft_print_unsigned_integer(t_print *tab)
 		ft_padding(tab, ' ', length);
 }
 
+void	ft_print_hex(t_print *tab, char lower)
+{
+	unsigned long	nbr;
+	unsigned int	length;
+
+	nbr = va_arg(tab->args, unsigned int);
+	if (nbr == 0 && tab->dot && tab->precision == 0)
+		length = 0;
+	else
+		length = ft_nb_len_base(nbr, 16);
+	if (tab->width && !tab->dash)
+		ft_padding(tab, ' ', ft_max(length, tab->precision));
+	ft_number_padding(tab, length);
+	if (length)
+		write_hex_nbr(nbr, lower);
+	tab->length += length;
+	if (tab->width && tab->dash)
+		ft_padding(tab, ' ', length);
+}
+
 t_print	*ft_initialise_tab(t_print *tab)
 {
 	tab->width = 0;
@@ -267,11 +287,9 @@ const char	*ft_eval_format(t_print	*tab, const char *format)
 	else if (*format == 'u')
 		ft_print_unsigned_integer(tab);
 	else if (*format == 'x')
-		;
-	// ft_print_ptr(tab);
+		ft_print_hex(tab, 1);
 	else if (*format == 'X')
-{}		;
-	// ft_print_ptr(tab);
+		ft_print_hex(tab, 0);
 	return (format + 1);
 }
 
