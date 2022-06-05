@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:24:19 by                   #+#    #+#             */
-/*   Updated: 2022/06/04 21:41:02 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 10:06:30 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,11 +124,6 @@ unsigned int	ft_nbr_len(int nbr)
 	return (ft_nb_len_base(nbr, 10));
 }
 
-unsigned int	ft_ptr_len(unsigned long int ptr)
-{
-	return (ft_nb_len_base(ptr, 16));
-}
-
 int	write_digit(char val, char lower)
 {
 	if (val >= 10)
@@ -162,7 +157,7 @@ void	ft_print_ptr(t_print *tab)
 	if (!ptr)
 		length = 5;
 	else
-		length = ft_ptr_len((unsigned long int) ptr) + 2;
+		length = ft_nb_len_base((unsigned long int) ptr, 16) + 2;
 	if (tab->width && !tab->dash)
 		ft_padding(tab, length);
 	if (!ptr)
