@@ -1,30 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   ft_padding.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/18 22:24:19 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/06/05 17:07:32 by bde-biol         ###   ########.fr       */
+/*   Created: 2022/06/05 16:49:05 by bde-biol          #+#    #+#             */
+/*   Updated: 2022/06/05 16:49:28 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_printf(const char *format, ...)
+void	ft_padding(t_print *tab, unsigned int min_size)
 {
-	t_print	tab;
+	char	padding_char;
 
-	tab.length = 0;
-	va_start(tab.args, format);
-	while (*format)
+	padding_char = ' ';
+	if (tab->zero)
+		padding_char = '0';
+	if (tab->hash)
+		min_size += 2;
+	while (min_size < tab->width)
 	{
-		if (*format == '%')
-			format = ft_eval_format_flags(&tab, format + 1);
-		else
-			tab.length += ft_putchr(*(format++));
+		tab->length += ft_putchr(padding_char);
+		min_size++;
 	}
-	va_end(tab.args);
-	return (tab.length);
+}
+
+void	ft_number_padding(t_print *tab, unsigned int min_size)
+{
+	while (min_size < tab->precision)
+	{
+		tab->length += ft_putchr('0');
+		tab->width--;
+		min_size++;
+	}
 }
