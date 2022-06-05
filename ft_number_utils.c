@@ -6,13 +6,13 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 16:54:52 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/06/05 17:03:25 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 17:12:19 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-unsigned int	ft_nb_len_base(unsigned long int ptr, unsigned int base)
+unsigned int	ft_nb_len_base(unsigned long ptr, unsigned int base)
 {
 	unsigned int	len;
 
@@ -43,7 +43,7 @@ static int	write_digit(char val, char lower)
 	return (ft_putchr((val) + '0'));
 }
 
-void	write_nbr_base(unsigned long int ptr, unsigned char base, char lower)
+void	write_nbr_base(unsigned long ptr, unsigned char base, char lower)
 {
 	if (ptr >= base)
 		write_nbr_base(ptr / base, base, lower);

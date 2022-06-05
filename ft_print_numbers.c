@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 17:07:41 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/06/05 17:08:40 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 17:12:19 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,14 @@ void	ft_print_ptr(t_print *tab)
 	if (ptr == 0 && tab->dot && tab->precision == 0)
 		length = 0;
 	else
-		length = ft_nb_len_base((unsigned long int) ptr, 16);
+		length = ft_nb_len_base((unsigned long) ptr, 16);
 	tab->hash = 1;
 	if (tab->width && !tab->dash)
 		ft_padding(tab, ft_max(length, tab->precision));
 	tab->length += ft_put_prefix(1);
 	ft_number_padding(tab, length);
 	if (length)
-		write_nbr_base((unsigned long int) ptr, 16, 1);
+		write_nbr_base((unsigned long) ptr, 16, 1);
 	tab->length += length;
 	if (tab->width && tab->dash)
 		ft_padding(tab, length);
