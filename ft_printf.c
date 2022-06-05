@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:24:19 by                   #+#    #+#             */
-/*   Updated: 2022/06/05 11:47:16 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 16:04:27 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ int	ft_put_prefix(char lower)
 		return (write(1, "0x", 2));
 	return (write(1, "0X", 2));
 }
-
 void	ft_padding(t_print *tab, unsigned int min_size)
 {
 	char padding_char;
@@ -162,21 +161,18 @@ void	ft_print_ptr(t_print *tab)
 	unsigned int	length;
 
 	ptr = va_arg(tab->args, void *);
-	if (!ptr)
-		length = 5;
+	if (ptr == 0 && tab->dot && tab->precision == 0)
+		length = 0;
 	else
-		length = ft_nb_len_base((unsigned long int) ptr, 16) + 2;
+		length = ft_nb_len_base((unsigned long int) ptr, 16);
+	tab->hash = 1;
 	if (tab->width && !tab->dash)
-		ft_padding(tab, length);
-	if (!ptr)
-		tab->length += write(1, "(nil)", length);
-	else
-	{
-		ft_put_prefix(1);
-		ft_number_padding(tab, length - 2);
+		ft_padding(tab, ft_max(length, tab->precision));
+	tab->length += ft_put_prefix(1);
+	ft_number_padding(tab, length);
+	if (length)
 		write_hex_nbr((unsigned long int) ptr, 1);
-		tab->length += length;
-	}
+	tab->length += length;
 	if (tab->width && tab->dash)
 		ft_padding(tab, length);
 }
@@ -246,12 +242,15 @@ void	ft_print_unsigned_integer(t_print *tab)
 
 void	ft_print_hex(t_print *tab, char lower)
 {
-	unsigned long	nbr;
+	unsigned int	nbr;
 	unsigned int	length;
 
 	nbr = va_arg(tab->args, unsigned int);
 	if (nbr == 0 && tab->dot && tab->precision == 0)
+	{
+		tab->hash = 0;
 		length = 0;
+	}
 	else
 		length = ft_nb_len_base(nbr, 16);
 	if (tab->width && !tab->dash)
