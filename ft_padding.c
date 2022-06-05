@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 16:49:05 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/06/05 16:49:28 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 18:28:42 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ void	ft_number_padding(t_print *tab, unsigned int min_size)
 	while (min_size < tab->precision)
 	{
 		tab->length += ft_putchr('0');
-		tab->width--;
+		if (tab->width > 0)
+			tab->width--;
 		min_size++;
 	}
 }
