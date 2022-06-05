@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 17:07:41 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/06/05 17:29:19 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 19:04:37 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,12 @@ void	ft_print_ptr(t_print *tab)
 	else
 		length = ft_nb_len_base((unsigned long) ptr, 16);
 	tab->hash = 1;
+	if (tab->zero)
+		tab->length += ft_put_prefix(1);
 	if (tab->width && !tab->dash)
 		ft_padding(tab, ft_max(length, tab->precision));
-	tab->length += ft_put_prefix(1);
+	if (!tab->zero)
+		tab->length += ft_put_prefix(1);
 	ft_number_padding(tab, length);
 	if (length)
 		ft_write_nbr_base((unsigned long) ptr, 16, 1);
@@ -102,16 +105,17 @@ void	ft_print_hex(t_print *tab, char lower)
 	unsigned int	length;
 
 	nbr = va_arg(tab->args, unsigned int);
-	if (nbr == 0 && tab->dot && tab->precision == 0)
-	{
+	if (nbr == 0)
 		tab->hash = 0;
+	if (tab->dot && tab->precision == 0)
 		length = 0;
-	}
 	else
 		length = ft_nb_len_base(nbr, 16);
+	if (tab->hash && nbr != 0 && tab->zero)
+		tab->length += ft_put_prefix(lower);
 	if (tab->width && !tab->dash)
 		ft_padding(tab, ft_max(length, tab->precision));
-	if (tab->hash && nbr != 0)
+	if (tab->hash && nbr != 0 && !tab->zero)
 		tab->length += ft_put_prefix(lower);
 	ft_number_padding(tab, length);
 	if (length)
