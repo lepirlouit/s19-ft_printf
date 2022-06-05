@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:39:57 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/06/05 17:15:21 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 17:29:26 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int				ft_max(unsigned int a, unsigned int b);
 int				ft_min(unsigned int a, unsigned int b);
 unsigned int	ft_nb_len_base(unsigned long ptr, unsigned int base);
 unsigned int	ft_nbr_len(int nbr);
-void			write_nbr_base(unsigned long ptr, unsigned char base,
+void			ft_write_nbr_base(unsigned long ptr, unsigned char base,
 					char lower);
 
 #endif

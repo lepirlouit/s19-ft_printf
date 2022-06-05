@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 16:54:52 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/06/05 17:12:19 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 17:29:09 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,16 @@ unsigned int	ft_nbr_len(int nbr)
 	return (ft_nb_len_base(nbr, 10));
 }
 
-static int	write_digit(char val, char lower)
+static int	ft_write_digit(char val, char lower)
 {
 	if (val >= 10)
 		return (ft_putchr((val) + (lower * ('a' - 'A')) + 'A' - 10));
 	return (ft_putchr((val) + '0'));
 }
 
-void	write_nbr_base(unsigned long ptr, unsigned char base, char lower)
+void	ft_write_nbr_base(unsigned long ptr, unsigned char base, char lower)
 {
 	if (ptr >= base)
-		write_nbr_base(ptr / base, base, lower);
-	write_digit(ptr % base, lower);
+		ft_write_nbr_base(ptr / base, base, lower);
+	ft_write_digit(ptr % base, lower);
 }

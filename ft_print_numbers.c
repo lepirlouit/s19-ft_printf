@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 17:07:41 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/06/05 17:12:19 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 17:29:19 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ void	ft_print_ptr(t_print *tab)
 	tab->length += ft_put_prefix(1);
 	ft_number_padding(tab, length);
 	if (length)
-		write_nbr_base((unsigned long) ptr, 16, 1);
+		ft_write_nbr_base((unsigned long) ptr, 16, 1);
 	tab->length += length;
 	if (tab->width && tab->dash)
 		ft_padding(tab, length);
 }
 
-void	print_sign(t_print *tab, int nbr, int padding_length)
+static void	ft_print_sign(t_print *tab, int nbr, int padding_length)
 {
 	if (!tab->zero && tab->width && !tab->dash)
 		ft_padding(tab, padding_length);
@@ -58,18 +58,18 @@ void	ft_print_integer(t_print *tab)
 		length = 0;
 	else
 		length = ft_nbr_len(nbr);
-	print_sign(tab, nbr, length);
+	ft_print_sign(tab, nbr, length);
 	if (nbr < 0)
 	{
 		ft_number_padding(tab, length - 1);
 		if (nbr <= -10)
-			write_nbr_base(-(nbr / 10), 10, 0);
-		write_nbr_base(-(nbr % 10), 10, 0);
+			ft_write_nbr_base(-(nbr / 10), 10, 0);
+		ft_write_nbr_base(-(nbr % 10), 10, 0);
 	}
 	else if (length)
 	{
 		ft_number_padding(tab, length);
-		write_nbr_base(nbr, 10, 0);
+		ft_write_nbr_base(nbr, 10, 0);
 	}
 	tab->length += length;
 	if (tab->width && tab->dash)
@@ -90,7 +90,7 @@ void	ft_print_unsigned_integer(t_print *tab)
 		ft_padding(tab, ft_max(length, tab->precision));
 	ft_number_padding(tab, length);
 	if (length)
-		write_nbr_base(nbr, 10, 0);
+		ft_write_nbr_base(nbr, 10, 0);
 	tab->length += length;
 	if (tab->width && tab->dash)
 		ft_padding(tab, length);
@@ -115,7 +115,7 @@ void	ft_print_hex(t_print *tab, char lower)
 		tab->length += ft_put_prefix(lower);
 	ft_number_padding(tab, length);
 	if (length)
-		write_nbr_base(nbr, 16, lower);
+		ft_write_nbr_base(nbr, 16, lower);
 	tab->length += length;
 	if (tab->width && tab->dash)
 		ft_padding(tab, length);
