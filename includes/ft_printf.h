@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:39:57 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/06/05 10:52:37 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 16:25:33 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ typedef struct s_print
 	unsigned int	dash : 1;
 	unsigned int	plus : 1;
 	unsigned int	hash : 1;
-	unsigned int	perc : 1;
 	unsigned int	space : 1;
 	unsigned int	precision;
 	unsigned int	width;
