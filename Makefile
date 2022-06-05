@@ -6,7 +6,7 @@
 #    By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/25 19:38:32 by bde-biol          #+#    #+#              #
-#    Updated: 2022/06/04 19:58:03 by bde-biol         ###   ########.fr        #
+#    Updated: 2022/06/05 10:12:56 by bde-biol         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ RM	= rm -f
 CFLAGS	= -Wall -Wextra -Werror
 AR	= ar rcs --thin
 NAME	= libftprintf.a
-LIBFT_NAME	= libft/libft.a
+LIBFT_NAME	= $(LIBFT)/libft.a
 
 
 all:		${NAME}
@@ -29,9 +29,11 @@ all:		${NAME}
 .c.o:
 	${CC} ${CFLAGS} -I includes/ -c $< -o ${<:.c=.o}
 
-${NAME}:	${OBJS}
-			@make -C $(LIBFT)
+${NAME}:	${OBJS} ${LIBFT_NAME}
 			${AR} ${NAME} ${OBJS} ${LIBFT_NAME}
+
+${LIBFT_NAME}:
+			make -C $(LIBFT)
 
 bonus		: all
 
@@ -40,11 +42,11 @@ main:	${NAME} main.c
 
 clean:
 			@make clean -C $(LIBFT)
-			${RM} ${OBJS} ${LIBFT_OBJS} ${BONUS_OBJS}
+			${RM} ${OBJS}
 
 fclean:		clean
 			@make fclean -C $(LIBFT)
-			${RM} ${NAME} ${LIBFT_NAME}
+			${RM} ${NAME}
 
 re:			fclean all
 
