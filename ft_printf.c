@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:24:19 by                   #+#    #+#             */
-/*   Updated: 2022/06/05 10:06:30 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 10:49:29 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ void	ft_update_tab(t_print *tab, unsigned int content_length)
 	tab->length += ft_max(tab->width, content_length);
 }
 
+int	ft_putchr(int c)
+{
+	return (write(1, &c, 1));
+}
+
 void	ft_padding(t_print *tab, unsigned int min_size)
 {
 	char padding_char;
@@ -40,7 +45,7 @@ void	ft_padding(t_print *tab, unsigned int min_size)
 		padding_char = '0';
 	while (min_size < tab->width)
 	{
-		tab->length += write(1, &padding_char, 1);
+		tab->length += ft_putchr(padding_char);
 		min_size++;
 	}
 }
@@ -49,16 +54,10 @@ void	ft_number_padding(t_print *tab, unsigned int min_size)
 {
 	while (min_size < tab->precision)
 	{
-		tab->length += write(1, "0", 1);
+		tab->length += ft_putchr('0');
 		tab->width--;
 		min_size++;
 	}
-}
-
-int	ft_putchr(int c)
-{
-	write(1, &c, 1);
-	return (1);
 }
 
 void	ft_print_char(t_print *tab)
@@ -68,7 +67,7 @@ void	ft_print_char(t_print *tab)
 	a = va_arg(tab->args, int);
 	if (tab->width && !tab->dash)
 		ft_padding(tab, 1);
-	tab->length += write(1, &a, 1);
+	tab->length += ft_putchr(a);
 	if (tab->width && tab->dash)
 		ft_padding(tab, 1);
 }
@@ -172,6 +171,14 @@ void	ft_print_ptr(t_print *tab)
 		ft_padding(tab, length);
 }
 
+void	print_sign(t_print *tab, int nbr)
+{
+	if (nbr < 0)
+		ft_putchr('-');
+	else if (tab->plus)
+		tab->length += ft_putchr('+');
+}
+
 void	ft_print_integer(t_print *tab)
 {
 	int				nbr;
@@ -182,14 +189,14 @@ void	ft_print_integer(t_print *tab)
 		length = 0;
 	else
 		length = ft_nbr_len(nbr);
-	if (nbr < 0 && tab->zero)
-		write(1, "-", 1);
+	if (tab->zero)
+		print_sign(tab, nbr);
 	if (tab->width && !tab->dash)
 		ft_padding(tab, length);
+	if (!tab->zero)
+		print_sign(tab, nbr);
 	if (nbr < 0)
 	{
-		if (nbr < 0 && !tab->zero)
-			write(1, "-", 1);
 		ft_number_padding(tab, length - 1);
 		if (nbr <= -10)
 			write_nbr(-(nbr / 10));
@@ -251,7 +258,7 @@ t_print	*ft_initialise_tab(t_print *tab)
 	tab->perc = 0;
 	tab->zero = 0;
 	tab->dot = 0;
-	tab->sign = 0;
+	tab->plus = 0;
 	tab->length = 0;
 	tab->is_zero = 0;
 	tab->dash = 0;
@@ -303,6 +310,7 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 	tab->width = 0;
 	tab->zero = 0;
 	tab->precision = 0;
+	tab->plus = 0;
 	//TODO : init flags
 	while (*format && !is_format(*format))
 	{
@@ -310,6 +318,8 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 			tab->dot = 1;
 		else if (*format == '-')
 			tab->dash = 1;
+		else if (*format == '+')
+			tab->plus = 1;
 		else if (*format == '0' && !tab->dot)
 			tab->zero = 1;
 		else if (ft_isdigit(*format))
@@ -338,7 +348,7 @@ int	ft_printf(const char *format, ...)
 		if (*format == '%')
 			format = ft_eval_format_flags(&tab, format + 1);
 		else
-			tab.length += write(1, format++, 1);
+			tab.length += ft_putchr(*(format++));
 	}
 	va_end(tab.args);
 	return (tab.length);
