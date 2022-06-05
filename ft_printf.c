@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/18 22:24:19 by                   #+#    #+#             */
-/*   Updated: 2022/06/05 10:49:29 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 11:47:16 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,13 @@ int	ft_putchr(int c)
 	return (write(1, &c, 1));
 }
 
+int	ft_put_prefix(char lower)
+{
+	if (lower)
+		return (write(1, "0x", 2));
+	return (write(1, "0X", 2));
+}
+
 void	ft_padding(t_print *tab, unsigned int min_size)
 {
 	char padding_char;
@@ -43,6 +50,8 @@ void	ft_padding(t_print *tab, unsigned int min_size)
 	padding_char = ' ';
 	if (tab->zero)
 		padding_char = '0';
+	if (tab->hash)
+		min_size += 2;
 	while (min_size < tab->width)
 	{
 		tab->length += ft_putchr(padding_char);
@@ -163,7 +172,8 @@ void	ft_print_ptr(t_print *tab)
 		tab->length += write(1, "(nil)", length);
 	else
 	{
-		write(1, "0x", 2);
+		ft_put_prefix(1);
+		ft_number_padding(tab, length - 2);
 		write_hex_nbr((unsigned long int) ptr, 1);
 		tab->length += length;
 	}
@@ -177,6 +187,8 @@ void	print_sign(t_print *tab, int nbr)
 		ft_putchr('-');
 	else if (tab->plus)
 		tab->length += ft_putchr('+');
+	else if (tab->space)
+		tab->length += ft_putchr(' ');
 }
 
 void	ft_print_integer(t_print *tab)
@@ -244,6 +256,8 @@ void	ft_print_hex(t_print *tab, char lower)
 		length = ft_nb_len_base(nbr, 16);
 	if (tab->width && !tab->dash)
 		ft_padding(tab, ft_max(length, tab->precision));
+	if (tab->hash && nbr != 0)
+		tab->length += ft_put_prefix(lower);
 	ft_number_padding(tab, length);
 	if (length)
 		write_hex_nbr(nbr, lower);
@@ -260,7 +274,7 @@ t_print	*ft_initialise_tab(t_print *tab)
 	tab->dot = 0;
 	tab->plus = 0;
 	tab->length = 0;
-	tab->is_zero = 0;
+	tab->hash = 0;
 	tab->dash = 0;
 	tab->perc = 0;
 	tab->space = 0;
@@ -311,7 +325,8 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 	tab->zero = 0;
 	tab->precision = 0;
 	tab->plus = 0;
-	//TODO : init flags
+	tab->hash = 0;
+	tab->space = 0;
 	while (*format && !is_format(*format))
 	{
 		if (*format == '.')
@@ -320,6 +335,10 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 			tab->dash = 1;
 		else if (*format == '+')
 			tab->plus = 1;
+		else if (*format == '#')
+			tab->hash = 1;
+		else if (*format == ' ')
+			tab->space = 1;
 		else if (*format == '0' && !tab->dot)
 			tab->zero = 1;
 		else if (ft_isdigit(*format))
@@ -331,7 +350,6 @@ const char	*ft_eval_format_flags(t_print *tab, const char *format)
 			while (format[1] && ft_isdigit(format[1]))
 				format++;
 		}
-		//TODO : eval other flags
 		format++;
 	}
 	return (ft_eval_format(tab, format));
