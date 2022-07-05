@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 17:07:41 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/06/05 19:04:37 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 20:12:11 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,17 @@ void	ft_print_ptr(t_print *tab)
 
 static void	ft_print_sign(t_print *tab, int nbr, int padding_length)
 {
+	(void)padding_length;
 	if (!tab->zero && tab->width && !tab->dash)
-		ft_padding(tab, padding_length);
+		ft_padding(tab, ft_max(padding_length,tab->precision + 1 ));
 	if (nbr < 0)
-		ft_putchr('-');
+		tab->length += ft_putchr('-');
 	else if (tab->plus)
 		tab->length += ft_putchr('+');
 	else if (tab->space)
 		tab->length += ft_putchr(' ');
-	if (tab->zero && tab->width && !tab->dash)
-		ft_padding(tab, padding_length);
+	// if (tab->zero && tab->width && !tab->dash)
+	// 	ft_padding(tab, padding_length);
 }
 
 void	ft_print_integer(t_print *tab)
@@ -64,7 +65,7 @@ void	ft_print_integer(t_print *tab)
 	ft_print_sign(tab, nbr, length);
 	if (nbr < 0)
 	{
-		ft_number_padding(tab, length - 1);
+		ft_number_padding(tab, length);
 		if (nbr <= -10)
 			ft_write_nbr_base(-(nbr / 10), 10, 0);
 		ft_write_nbr_base(-(nbr % 10), 10, 0);
@@ -76,7 +77,7 @@ void	ft_print_integer(t_print *tab)
 	}
 	tab->length += length;
 	if (tab->width && tab->dash)
-		ft_padding(tab, length);
+		ft_padding(tab, length +1);
 }
 
 void	ft_print_unsigned_integer(t_print *tab)

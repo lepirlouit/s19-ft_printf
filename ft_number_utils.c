@@ -6,7 +6,7 @@
 /*   By: bde-biol <bde-biol@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 16:54:52 by bde-biol          #+#    #+#             */
-/*   Updated: 2022/06/05 17:29:09 by bde-biol         ###   ########.fr       */
+/*   Updated: 2022/06/05 19:31:44 by bde-biol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ unsigned int	ft_nb_len_base(unsigned long ptr, unsigned int base)
 unsigned int	ft_nbr_len(int nbr)
 {
 	if (nbr <= -10)
-		return (2 + ft_nb_len_base(-(nbr / 10), 10));
+		return (1 + ft_nb_len_base(-(nbr / 10), 10));
 	if (nbr < 0)
-		return (1 + ft_nb_len_base(-nbr, 10));
+		return (0 + ft_nb_len_base(-nbr, 10));
 	return (ft_nb_len_base(nbr, 10));
 }
 
